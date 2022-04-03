@@ -295,8 +295,8 @@ RESULTS
 
 Assumptions
 --
-* Assuming docker compose is used
-* Assuming Makerfile is used
+* Assuming docker compose is used. [How to install it?](https://docs.docker.com/get-docker/)
+* Assuming Makerfile is used. [How to install it?](https://linuxhint.com/install-make-ubuntu/)
 * Assuming port 80 is not being used on localhost
 
 
@@ -326,33 +326,79 @@ This repository follows the Hexagonal Architecture pattern. .
 With this, we can see that the current structure of a Bounded Context is:
 
 ```scala
-$ tree -L 4 src
-
+$ tree -L 5 src
 src
-|--- Common // Shared Kernel: Common infrastructure and domain shared between the different Bounded Contexts
-|   |-- Domain
-|   `-- Infrastructure
-`--- Discount // Discount subdomain / Bounded Context: Features related to the products
-     `-- Application // Some Module inside the Mooc context
-        |-- SearchByCriteria // Inside the application layer all is structured by actions
-        |   |-- GetProductList.php
-        |   |-- GetProductListHandler.php
-        |   `-- ProductSearcher.php
-        |-- Domain
-        |   |-- Product.php // The Aggregate of the Module
-        |   |-- ProductCategory.php
-        |   |-- ProductDiscounter.php // The `Interface` of the discounter is inside Domain
-        |   |-- ProductName.php
-        |   `-- ProductRepository.php // The `Interface` of the repository is inside Domain
-        `-- Infrastructure // The infrastructure of our module
-            |-- DependencyInjection
-            `-- Persistence
-               `-- InMemory
-                  |--InMemoryCriteria.php // An interface of the query string filter converter
-                  |--InMemoryCriteriaConverter.php // An implementation of the query string filter converter
-                  |--InMemoryProductRepository.php // An implementation of the repository
-                  |--products.php 
-                  `--ReadFile.php 
+├── Common  // Shared Kernel: Common infrastructure and domain shared between the different Bounded Contexts
+│   ├── Domain
+│   │   ├── Assert.php
+│   │   ├── Collection.php
+│   │   ├── Contracts
+│   │   │   ├── Currency.php
+│   │   │   ├── CurrencyValueObject.php
+│   │   │   ├── Entity.php
+│   │   │   ├── Enum.php
+│   │   │   ├── Equatable.php
+│   │   │   ├── IntValueObject.php
+│   │   │   ├── Price.php
+│   │   │   ├── PriceValueObject.php
+│   │   │   ├── StringValueObject.php
+│   │   │   └── ValueObject.php
+│   │   ├── Criteria  // Criteria pattern
+│   │   │   ├── Criteria.php
+│   │   │   ├── CriteriaConverter.php
+│   │   │   ├── Filter.php
+│   │   │   ├── FilterField.php
+│   │   │   ├── FilterOperator.php
+│   │   │   ├── FilterValue.php
+│   │   │   ├── Filters.php
+│   │   │   ├── Order.php
+│   │   │   ├── OrderBy.php
+│   │   │   └── OrderType.php
+│   │   ├── Model  // Common object values
+│   │   │   ├── Currency.php
+│   │   │   ├── Price.php
+│   │   │   └── Sku.php
+│   │   └── Transformable.php
+│   └── Infrastructure
+│       └── Bus
+│           ├── Bus.php
+│           └── BusComponent.php
+├── Discount  // Discount subdomain / Bounded Context: Features related to the products
+│   ├── Application  // Inside the application layer all is structured by actions
+│   │   ├── ProductResponse.php
+│   │   ├── ProductsResponse.php
+│   │   └── SearchByCriteria  
+│   │       ├── GetProductList.php
+│   │       ├── GetProductListHandler.php
+│   │       └── ProductSearcher.php
+│   ├── Domain
+│   │   ├── Discount
+│   │   │   ├── Discount.php
+│   │   │   ├── Discounter.php  //Service to apply discount by requirements
+│   │   │   └── Specification   //Specification pattern to apply one or multiple discount to product
+│   │   │       ├── CategorySpecification.php
+│   │   │       ├── OrSpecification.php
+│   │   │       ├── SkuSpecification.php
+│   │   │       ├── Specification.php
+│   │   │       └── SpecificationCollection.php
+│   │   └── Product
+│   │       ├── Product.php  // The Aggregate of the Module
+│   │       ├── ProductCategory.php
+│   │       ├── ProductDiscounter.php
+│   │       ├── ProductName.php
+│   │       └── ProductRepository.php  // Repository interface
+│   └── Infrastructure
+│       ├── Persistence
+│       │   └── InMemory
+│       │       ├── InMemoryCriteria.php
+│       │       ├── InMemoryCriteriaConverter.php
+│       │       ├── InMemoryProductRepository.php
+│       │       ├── ReadFile.php
+│       │       └── products.json  // products stored in a json file
+│       └── Ui
+│           └── Rest
+│               └── SearchProductsController.php // Port / endpoint to search products
+└── Kernel.php
 
 ```
 
