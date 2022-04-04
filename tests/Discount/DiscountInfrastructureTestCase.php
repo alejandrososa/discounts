@@ -9,7 +9,6 @@ use Kata\Discount\Infrastructure\Persistence\InMemory\InMemoryCriteria;
 use Kata\Discount\Infrastructure\Persistence\InMemory\ReadFile;
 use Kata\Tests\Shared\Infrastructure\PhpUnit\InfrastructureTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-
 use function Lambdish\Phunctional\map;
 
 abstract class DiscountInfrastructureTestCase extends InfrastructureTestCase

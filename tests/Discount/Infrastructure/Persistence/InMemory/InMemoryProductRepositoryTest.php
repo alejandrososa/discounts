@@ -9,8 +9,7 @@ use Kata\Tests\Common\Domain\Criteria\CriteriaMother;
 use Kata\Tests\Discount\Application\SearchByCriteria\ProductCriteriaMother;
 use Kata\Tests\Discount\DiscountInfrastructureTestCase;
 use Kata\Tests\Discount\Domain\Product\ProductMother;
-
-use function Lambdish\Phunctional\map;
+use Kata\Tests\Shared\Domain\TextMother;
 
 class InMemoryProductRepositoryTest extends DiscountInfrastructureTestCase
 {
@@ -55,13 +54,14 @@ class InMemoryProductRepositoryTest extends DiscountInfrastructureTestCase
 
     public function testItShouldFilterByCriteria(): void
     {
-        $existingProduct = ProductMother::create(sku: '00001');
+        $sku = TextMother::create();
+        $existingProduct = ProductMother::create(sku: $sku);
         $anotherExistingProduct = ProductMother::create();
         $lastExistingProduct = ProductMother::create();
         $existingProducts = [$existingProduct, $anotherExistingProduct, $lastExistingProduct];
         $expectedProducts = [$existingProduct];
 
-        $nameContainsDddCriteria = ProductCriteriaMother::skuContains('00001');
+        $nameContainsDddCriteria = ProductCriteriaMother::skuContains($sku);
 
         $this->readFileMustReturn($existingProducts);
 

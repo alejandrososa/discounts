@@ -6,6 +6,7 @@ use Kata\Discount\Domain\Discount\Specification\CategorySpecification;
 use Kata\Discount\Domain\Discount\Specification\OrSpecification;
 use Kata\Discount\Domain\Discount\Specification\SkuSpecification;
 use Kata\Discount\Domain\Discount\Specification\Specification;
+use Kata\Tests\Shared\Domain\TextMother;
 
 class OrSpecificationMother
 {
@@ -14,8 +15,8 @@ class OrSpecificationMother
         ?Specification $secondSpecification = null,
     ): Specification {
         return new OrSpecification(
-            $firstSpecification ?? new CategorySpecification('fake'),
-            $secondSpecification ?? new SkuSpecification('fake'),
+            $firstSpecification ?? new CategorySpecification(TextMother::create()),
+            $secondSpecification ?? new SkuSpecification(TextMother::create()),
         );
     }
 }

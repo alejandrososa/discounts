@@ -162,18 +162,22 @@ docker-compose exec php bash
 Make requests to the endpoint [/products](https://localhost/products)
 ---
 
+**TEST WITH cURL**
 ```
-TEST WITH cURL
-
 # search without filters
-curl --location --request GET 'https://localhost/products'
+curl --location -g -k --request GET 'http://localhost/products'
 
 # search by category
-curl --location -g --request GET 'https://localhost/products?filters[0][field]=category&filters[0][operator]=CONTAINS&filters[0][value]=boots'
+curl --location -g -k --request GET 'http://localhost/products?filters[0][field]=category&filters[0][operator]=CONTAINS&filters[0][value]=boots'
 
 # search by sku
-curl --location -g --request GET 'https://localhost/products?filters[0][field]=sku&filters[0][operator]=CONTAINS&filters[0][value]=00003'
+curl --location -g -k --request GET 'http://localhost/products?filters[0][field]=sku&filters[0][operator]=CONTAINS&filters[0][value]=00003'
 ```
+
+**TEST WITH POSTMAN**
+
+![](./docs/ScreenshotPostman.png "Postman")
+
 
 ```
 RESULTS
@@ -322,7 +326,7 @@ This project is using the framework Symfony 6
 
 ### 🎯 Hexagonal Architecture
 
-This repository follows the Hexagonal Architecture pattern. .
+This repository follows the Hexagonal Architecture pattern.
 With this, we can see that the current structure of a Bounded Context is:
 
 ```scala

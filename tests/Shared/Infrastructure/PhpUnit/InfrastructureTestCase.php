@@ -2,11 +2,20 @@
 
 namespace Kata\Tests\Shared\Infrastructure\PhpUnit;
 
+use Faker\Factory;
+use Faker\Generator;
 use Kata\Kernel;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 abstract class InfrastructureTestCase extends KernelTestCase
 {
+    private ?Generator $fake = null;
+
+    protected function fake(): Generator
+    {
+        return $this->fake = $this->fake ?: Factory::create();
+    }
+
     protected function setUp(): void
     {
         $_SERVER['KERNEL_CLASS'] = Kernel::class;

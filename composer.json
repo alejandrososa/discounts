@@ -73,6 +73,7 @@
         }
     },
     "require-dev": {
+        "fakerphp/faker": "^1.19",
         "phpunit/phpunit": "^9.5"
     }
 }

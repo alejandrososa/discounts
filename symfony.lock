@@ -5,6 +5,9 @@
     "doctrine/instantiator": {
         "version": "1.4.1"
     },
+    "fakerphp/faker": {
+        "version": "v1.19.0"
+    },
     "lambdish/phunctional": {
         "version": "v2.1.0"
     },

@@ -6,6 +6,8 @@ use Kata\Common\Domain\Criteria\Criteria;
 use Kata\Tests\Common\Domain\Criteria\CriteriaMother;
 use Kata\Tests\Common\Domain\Criteria\FilterMother;
 use Kata\Tests\Common\Domain\Criteria\FiltersMother;
+use Kata\Tests\Shared\Domain\Creator;
+use Kata\Tests\Shared\Domain\TextMother;
 
 final class ProductCriteriaMother
 {
@@ -17,9 +19,9 @@ final class ProductCriteriaMother
             FiltersMother::createOne(
                 FilterMother::fromValues(
                     [
-                        'field' => $field ?? 'name',
+                        'field' => $field ?? Creator::random()->randomElement(['category', 'sku', 'name']),
                         'operator' => 'CONTAINS',
-                        'value' => $value ?? 'fake',
+                        'value' => $value ?? TextMother::create(),
                     ]
                 )
             )

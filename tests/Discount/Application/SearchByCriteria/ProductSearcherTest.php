@@ -4,6 +4,8 @@ namespace Kata\Tests\Discount\Application\SearchByCriteria;
 
 use Kata\Discount\Application\ProductsResponse;
 use Kata\Discount\Application\SearchByCriteria\ProductSearcher;
+use Kata\Discount\Infrastructure\Persistence\InMemory\InMemoryCriteriaConverter;
+use Kata\Discount\Infrastructure\Persistence\InMemory\InMemoryProductRepository;
 use Kata\Tests\Common\Domain\Criteria\CriteriaMother;
 use Kata\Tests\Discount\DiscountInfrastructureTestCase;
 use Kata\Tests\Discount\Domain\Product\ProductMother;
@@ -15,7 +17,10 @@ class ProductSearcherTest extends DiscountInfrastructureTestCase
     protected function setUp(): void
     {
         $this->sut = new ProductSearcher(
-            $this->productRepository(),
+            new InMemoryProductRepository(
+                new InMemoryCriteriaConverter(),
+                $this->readFile(),
+            ),
             $this->productDiscounter()
         );
     }
@@ -29,10 +34,11 @@ class ProductSearcherTest extends DiscountInfrastructureTestCase
     {
         $existingProduct = ProductMother::create();
         $anotherExistingProduct = ProductMother::create();
-        $existingProducts = [$existingProduct, $anotherExistingProduct];
+        $lastExistingProduct = ProductMother::create();
+        $existingProducts = [$existingProduct, $anotherExistingProduct, $lastExistingProduct];
 
         $criteria = CriteriaMother::empty();
-        $this->productRepositoryMustReturn($existingProducts);
+        $this->readFileMustReturn($existingProducts);
 
         $result = $this->sut->search(
             filters: $criteria->filters(),
@@ -49,10 +55,13 @@ class ProductSearcherTest extends DiscountInfrastructureTestCase
     {
         $existingProduct = ProductMother::create(name: 'existing', category: 'boots');
         $lastExistingProduct = ProductMother::create(name: 'last', category: 'boots');
-        $expectedProducts = [$existingProduct, $lastExistingProduct];
+        $anotherExistingProduct = ProductMother::create();
+        $oneMoreExistingProduct = ProductMother::create();
+        $existingProducts = [$existingProduct, $anotherExistingProduct, $lastExistingProduct, $oneMoreExistingProduct];
+        $expectedProductsMatchCriteria = [$existingProduct, $lastExistingProduct];
 
         $criteria = ProductCriteriaMother::categoryContains('boots');
-        $this->productRepositoryMustReturn($expectedProducts);
+        $this->readFileMustReturn($existingProducts);
 
         $result = $this->sut->search(
             filters: $criteria->filters(),
@@ -62,7 +71,7 @@ class ProductSearcherTest extends DiscountInfrastructureTestCase
         );
 
         $this->eventually(fn() => $this->assertInstanceOf(ProductsResponse::class, $result));
-        $this->eventually(fn() => $this->assertCount(count($expectedProducts), $result->products()));
+        $this->eventually(fn() => $this->assertCount(count($expectedProductsMatchCriteria), $result->products()));
         $this->eventually(fn() => $this->assertEquals('existing', $result->products()[0]->name()));
         $this->eventually(fn() => $this->assertEquals('last', $result->products()[1]->name()));
     }

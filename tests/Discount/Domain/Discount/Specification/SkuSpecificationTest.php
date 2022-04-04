@@ -7,12 +7,13 @@ use Kata\Discount\Domain\Discount\Specification\SkuSpecification;
 use Kata\Discount\Domain\Discount\Specification\Specification;
 use Kata\Tests\Discount\DiscountUnitTestCase;
 use Kata\Tests\Discount\Domain\Product\ProductMother;
+use Kata\Tests\Shared\Domain\TextMother;
 
 class SkuSpecificationTest extends DiscountUnitTestCase
 {
     public function testItMustBeInstanceOfSpecification()
     {
-        $this->assertInstanceOf(Specification::class, new SkuSpecification('fake'));
+        $this->assertInstanceOf(Specification::class, new SkuSpecification(TextMother::create()));
     }
 
     public function skuProvider()

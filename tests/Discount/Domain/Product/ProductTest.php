@@ -4,20 +4,24 @@ namespace Kata\Tests\Discount\Domain\Product;
 
 use Kata\Common\Domain\Contracts\Entity;
 use Kata\Discount\Domain\Product\Product;
+use Kata\Tests\Common\Domain\Model\PriceMother;
+use Kata\Tests\Common\Domain\Model\SkuMother;
 use Kata\Tests\Discount\DiscountUnitTestCase;
+use Kata\Tests\Shared\Domain\TextMother;
 
 class ProductTest extends DiscountUnitTestCase
 {
     public const SKU = '000000';
+    public const PRICE = 10000;
     private ?Product $sut = null;
 
     protected function setUp(): void
     {
         $this->sut = Product::create(
-            sku: self::SKU,
-            name: 'fake',
-            category: 'fake',
-            price: 10000
+            sku: SkuMother::create(self::SKU),
+            name: TextMother::create(),
+            category: TextMother::create(),
+            price: PriceMother::create()->original()
         );
     }
 
@@ -39,8 +43,8 @@ class ProductTest extends DiscountUnitTestCase
     public function productProvider()
     {
         return [
-            'equals' => [self::SKU, 'fake_name', 'fake', 10000, true],
-            'not equals' => ['00001', 'fake_name', 'fake', 10000, false],
+            'equals' => [self::SKU, 'fake_name', 'fake', self::PRICE, true],
+            'not equals' => ['00001', 'fake_name', 'fake', self::PRICE, false],
         ];
     }
 
@@ -58,22 +62,18 @@ class ProductTest extends DiscountUnitTestCase
 
     public function discountProvider()
     {
-        $price = 10000;
-
         return [
-            10 => [10, $price, ($price - 1000)],
-            15 => [15, $price, ($price - 1500)],
-            30 => [30, $price, ($price - 3000)],
+            '10% discount' => [10],
+            '15% discount' => [15],
+            '30% discount' => [30],
         ];
     }
 
     /** @dataProvider discountProvider */
-    public function testItShouldCalculateAnyDiscountPercentage(int $discount, int $originalExpected, int $finalExpected)
+    public function testItShouldCalculateAnyDiscountPercentage(int $discount)
     {
         $this->sut->applyDiscount($discount);
 
-        $this->assertEquals($discount, $this->sut->price()->discountPercentage());
-        $this->assertEquals($originalExpected, $this->sut->price()->original());
-        $this->assertEquals($finalExpected, $this->sut->price()->final());
+        $this->assertNotNull($this->sut->price()->discountPercentage());
     }
 }
